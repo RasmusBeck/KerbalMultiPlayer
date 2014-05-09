@@ -2429,7 +2429,7 @@ namespace KMPServer
                 record => {
                     KMPVesselUpdate vessel_update = (KMPVesselUpdate)ByteArrayToObject(GetDataReaderBytes(record, 0));
                     vessel_update.state = State.ACTIVE;
-                    vessel_update.isPrivate = record.GetBoolean(1);
+                    vessel_update.isPrivate = allVesselsPublic ? record.GetBoolean(1) : false;
                     vessel_update.isMine = false;
                     vessel_update.relTime = RelativeTime.FUTURE;
                     byte[] update = ObjectToByteArray(vessel_update);
@@ -2761,8 +2761,11 @@ namespace KMPServer
             //Write number of ships in initial sync
             KMPCommon.intToBytes(countShipsInDatabase()).CopyTo(data_bytes, 16 + version_bytes.Length);
 
-            KMPCommon.intToBytes(kmpModControl.Length).CopyTo(data_bytes, 20 + version_bytes.Length);
-            kmpModControl.CopyTo(data_bytes, 24 + version_bytes.Length);
+            KMPCommon.intToBytes(kmpModControl.Length).CopyTo(data_bytes, 24 + version_bytes.Length);
+            kmpModControl.CopyTo(data_bytes, 28 + version_bytes.Length);
+            
+            //Write whether or not to hide privacy window
+            KMPCommon.intToBytes(settings.allVesselsPublic).CopyTo(data_bytes, 29, version.bytes.Length);
 
             cl.queueOutgoingMessage(KMPCommon.ServerMessageID.HANDSHAKE, data_bytes);
         }
