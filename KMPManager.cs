@@ -4532,7 +4532,7 @@ namespace KMP
 						KMPInfoDisplay.layoutOptions
 						);
 					
-					if (isInFlight && !KMPInfoDisplay.infoDisplayMinimized)
+					if (isInFlight && !KMPInfoDisplay.infoDisplayMinimized &&  (syncing || !allVesselsPublic))
 					{
 						GUILayout.Window(
 							GUIUtility.GetControlID(999995, FocusType.Passive),
